@@ -1,0 +1,101 @@
+:root {
+  --primary-color: #5f5a47;
+  --primary-color-hover: #4e4939;
+}
+
+.sign-in .form-field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: var(--primary-color);
+}
+
+.sign-in .form-field .MuiInputLabel-root.Mui-focused {
+  color: var(--primary-color);
+}
+
+.sign-in .submit-button {
+  margin-top: 24px; 
+  background-color: var(--primary-color);
+}
+
+.sign-in .submit-button:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.forum .logo {
+  width: 60px;
+  height: 60x;
+  object-fit: contain;
+  margin-right: 12px;
+}
+
+/* 
+.forum .search {
+  width: 260px;
+} */
+
+.forum .search .MuiOutlinedInput-root {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+.forum .search input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.forum .search fieldset {
+  border-color: #d9bfb1;
+}
+
+.forum .search:hover fieldset {
+  border-color: #d9bfb1 !important;
+}
+
+.forum .search.Mui-focused fieldset {
+  border-color: #d9bfb1 !important;
+}
+
+.forum .search input {
+  color: #5f5a47;
+}
+
+.forum .search .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #d9bfb1 !important;
+}
+
+.forum .card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+}
+
+.forum .card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  border-left: 4px solid var(--primary-color);
+}
+
+.forum .card {
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.forum .card:hover {
+  color: var(--primary-color-hover);
+}
+
+@media (max-width: 1024px) {
+  .sign-in {
+    flex-direction: column;
+    justify-content: center !important;
+    gap: 50px;
+  }
+
+  .sign-in .description {
+    display: none;
+  }
+
+  .sign-in .input-card {
+    width: 400px !important;
+  }
+}
