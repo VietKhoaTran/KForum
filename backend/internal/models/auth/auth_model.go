@@ -1,7 +1,7 @@
-package models
+package auth
 
 import (
-	"backend/backend/config"
+	"backend/backend/internal/config"
 
 	"github.com/golang-jwt/jwt/v5"
 )

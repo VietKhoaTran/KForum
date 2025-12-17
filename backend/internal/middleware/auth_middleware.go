@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"backend/backend/config"
+	"backend/backend/internal/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,12 +15,12 @@ type Claims struct {
 
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+
 		cookie, err := ctx.Request.Cookie("auth_token")
 		if err != nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-
 		claims := &Claims{}
 		token, err := jwt.ParseWithClaims(cookie.Value, claims, func(t *jwt.Token) (interface{}, error) {
 			return config.JWTSecret, nil
@@ -30,7 +30,6 @@ func AuthMiddleWare() gin.HandlerFunc {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-
 		username := claims.Name
 		ctx.Set("username", username)
 		ctx.Next()

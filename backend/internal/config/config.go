@@ -7,10 +7,12 @@ import (
 )
 
 var (
-	JWTSecret []byte
+	JWTSecret    []byte
+	CookieDomain string
 )
 
 func init() {
 	godotenv.Load()
 	JWTSecret = []byte(os.Getenv("JWT_SECRET"))
+	CookieDomain = os.Getenv("COOKIE_DOMAIN")
 }

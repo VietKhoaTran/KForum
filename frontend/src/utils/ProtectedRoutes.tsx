@@ -1,5 +1,6 @@
 import {Outlet, Navigate} from "react-router-dom";
 import { useEffect, useState } from "react";
+import api from "../api/api.tsx";
 
 const ProtectedRoutes = () => {
     const [loading, setLoading] = useState(true)
@@ -7,17 +8,9 @@ const ProtectedRoutes = () => {
     const [username, setUsername] = useState<string | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:5000/auth/me", {
-            credentials: "include",
-        })
+        api.get("/auth/me")
         .then(res => {
-            if(!res.ok) {
-                throw new Error("unauthorized")
-            }
-            return res.json()
-        })
-        .then(data => {
-            setUsername(data.username)
+            setUsername(res.data.username)
         })
         .catch(() => {
             setAuthenticated(false)
@@ -26,7 +19,8 @@ const ProtectedRoutes = () => {
             setLoading(false)
         })
     }, [])
-
+    
+    //to be put in the context
     if (loading) return <p> Checking authentication...</p>
     return authenticated ? <Outlet context={{username}}/> : <Navigate to = "/"/>
 }
