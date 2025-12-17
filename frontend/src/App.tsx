@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import SignIn from "./pages/AuthPage.tsx";
-import Forum from "./pages/Forum.tsx"
+import SignIn from "./pages/AuthPage/AuthPage.tsx";
+import Forum from "./pages/ForumPage/ForumPage.tsx"
 
 import ProtectedRoutes from "./utils/ProtectedRoutes.tsx";
 

@@ -1,7 +1,10 @@
 :root {
   --primary-color: #5f5a47;
   --primary-color-hover: #4e4939;
+  --color: #AE887B;
+  --color2: #6B7280; 
 }
+
 
 .sign-in .form-field .MuiOutlinedInput-root.Mui-focused fieldset {
   border-color: var(--primary-color);
@@ -70,7 +73,7 @@
 .forum .card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
-  border-left: 4px solid var(--primary-color);
+  /* border-left: 4px solid var(--primary-color); */
 }
 
 .forum .card {
