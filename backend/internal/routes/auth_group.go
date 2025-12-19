@@ -12,4 +12,5 @@ func authGroup(r *gin.RouterGroup) {
 
 	r.GET("/me", middleware.AuthMiddleWare(), ctrl.GetMe)
 	r.POST("/signup", ctrl.SignUp)
+	r.POST("/login", ctrl.LogIn)
 }

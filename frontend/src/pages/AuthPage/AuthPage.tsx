@@ -14,6 +14,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import useSignUp from "../../hooks/auth/useSignUp.tsx"
 
 import "../Page.css";
+import useLogIn from "../../hooks/auth/useLogIn.tsx";
 const PRIMARY_COLOR = "#5f5a47";
 
 const AuthPage = () => {
@@ -24,12 +25,31 @@ const AuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
 
-  const { login, loading, error } = useSignUp();
-  
-  const isSubmitDisabled =
-    !name.trim() || !password.trim() || (isSignUp && password !== confirmPassword);
+  const {
+    signup,
+    loading: signupLoading,
+    error: signupError,
+  } = useSignUp();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const {
+    login,
+    loading: loginLoading,
+    error: loginError,
+  } = useLogIn();
+
+  const isSubmitDisabled =
+    !name.trim() || !password.trim();
+
+  const handleSubmitSignUp = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if(isSignUp && password !== confirmPassword) {
+      alert("Passwords do not match");
+      return
+    }
+    await signup(name, password);
+  };
+
+  const handleSubmitLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await login(name, password);
   };
@@ -57,7 +77,7 @@ const AuthPage = () => {
             {isSignUp ? "Sign Up" : "Welcome back!"}
           </Typography>
 
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={isSignUp ? handleSubmitSignUp : handleSubmitLogin}>
             <TextField
               fullWidth
               autoFocus

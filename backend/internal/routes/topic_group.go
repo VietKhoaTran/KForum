@@ -1,7 +1,15 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"backend/backend/internal/controllers/topic"
+	"backend/backend/internal/middleware"
+
+	"github.com/gin-gonic/gin"
+)
 
 func topicGroup(r *gin.RouterGroup) {
+	ctrl := topic.NewController()
 
+	r.POST("/create", middleware.AuthMiddleWare(), ctrl.Create)
+	r.GET("/fetch", middleware.AuthMiddleWare(), ctrl.Fetch)
 }

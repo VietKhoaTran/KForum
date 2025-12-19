@@ -9,6 +9,15 @@ interface Props {
 }
 
 const TopicList = ({ topics, emptyMessage }: Props) => {
+  // if (emptyMessage == "none") {
+  //   return (
+  //     <Box sx={{ py: 1 }}>
+  //       <Typography variant="h6" sx={{ color: BRAND_PRIMARY }}>
+  //         No Topics Yet
+  //       </Typography>
+  //     </Box>
+  //   );
+  // }
   if (topics.length === 0) {
     return (
       <Box sx={{ textAlign: 'center', py: 8 }}>
@@ -22,7 +31,7 @@ const TopicList = ({ topics, emptyMessage }: Props) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {topics.map(topic => (
-        <TopicCard key={topic.id} topic={topic} />
+        <TopicCard key={topic.ID} topic={topic} />
       ))}
     </Box>
   );

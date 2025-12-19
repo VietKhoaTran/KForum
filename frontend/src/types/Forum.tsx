@@ -1,8 +1,24 @@
-export type TopicLabel = 'created' | 'joined' | 'trending';
-
 export interface Topic {
-  id: number;
+  ID: number;
+  Title: string;
+  Description: string;
+  Label: 'created' | 'none';
+}
+
+export interface BackendTopic {
+  ID: number;
+  Title: string;
+  Description: string;
+  CreatedBy: string;
+  CreatedAt: string;
+}
+
+export interface CreateTopicRequest {
   title: string;
   description: string;
-  label: TopicLabel;
+}
+
+export interface CreateTopicResponse {
+  message: string;
+  topic?: Topic;
 }

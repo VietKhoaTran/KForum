@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import api from "../api/api.tsx";
 
 const ProtectedRoutes = () => {
-    const [loading, setLoading] = useState(true)
-    const [authenticated, setAuthenticated] = useState(true)
+    const [loading, setLoading] = useState<boolean>(true)
+    const [authenticated, setAuthenticated] = useState<boolean>(true)
     const [username, setUsername] = useState<string | null>(null);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const ProtectedRoutes = () => {
     
     //to be put in the context
     if (loading) return <p> Checking authentication...</p>
-    return authenticated ? <Outlet context={{username}}/> : <Navigate to = "/"/>
+    return authenticated ? <Outlet context={{username}}/> : <Navigate to = "/auth"/>
 }
 
 export default ProtectedRoutes;

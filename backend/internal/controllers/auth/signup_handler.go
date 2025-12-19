@@ -2,33 +2,53 @@ package auth
 
 import (
 	"backend/backend/internal/config"
-	models "backend/backend/internal/models/auth"
-	"fmt"
+	dataAuth "backend/backend/internal/dataaccess"
+	models "backend/backend/internal/models"
+	utilsAuth "backend/backend/internal/utils/auth"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (c *Controller) SignUp(ctx *gin.Context) {
+	var req models.AuthRequest
 
-	fmt.Print(config.CookieDomain)
-
-	var req models.SignInRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	signedToken, _ := models.CreateJWT(req.Name)
+	hashedPassword, err := utilsAuth.HashPassword(req.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return
+	}
 
+	exists, err := dataAuth.CheckExisting(req.Username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error checking user exists"})
+		return
+	}
+	if exists {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "User already exists"})
+		return
+	}
+
+	err = dataAuth.AddUser(req.Username, hashedPassword)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Error adding user"})
+		return
+	}
+
+	issuedJWT, _ := models.CreateJWT(req.Username)
 	ctx.SetCookie(
 		"auth_token",
-		signedToken,
-		10*365*24*60*60,
+		issuedJWT,
+		10*24*60*60, //10 days
 		"/",
 		config.CookieDomain,
 		false,
-		true,
+		true, //HttpOnly
 	)
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "JWT in Cookie successfully"})
