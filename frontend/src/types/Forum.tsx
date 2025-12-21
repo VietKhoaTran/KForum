@@ -9,8 +9,8 @@ export interface BackendTopic {
   ID: number;
   Title: string;
   Description: string;
-  CreatedBy: string;
-  CreatedAt: string;
+  Pinned: boolean;
+  Created: boolean;
 }
 
 export interface CreateTopicRequest {

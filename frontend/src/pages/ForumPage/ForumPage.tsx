@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect} from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -14,74 +14,90 @@ import { useOutletContext } from "react-router-dom";
 
 import TopicList from './TopicList.tsx';
 import CreateCard from './CreateCard.tsx';
+import EditCard from './EditCard.tsx';
 import useCreateTopic from "../../hooks/topic/useCreateTopic.tsx";
-import { Topic, BackendTopic } from '../../types/Forum.tsx';
+import usePinTopic from '../../hooks/topic/usePinTopic.tsx';
+import { BackendTopic } from '../../types/Forum.tsx';
 import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from './forum.constants.ts';
 import '../Page.css';
 import logo from '../../image/logo.png';
 import useFetchTopic from '../../hooks/topic/useFetchTopic.tsx';
 
-
 const ForumPage = () => {
   const { username } = useOutletContext<{ username: string }>();
-  const {topics, fetchTopics, loading, error} = useFetchTopic();
+  const { topics, fetchTopics, loading, error } = useFetchTopic();
+  const { topicCreate } = useCreateTopic();
+  const { topicPin } = usePinTopic();
   
+  const [localTopics, setLocalTopics] = useState<BackendTopic[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+
   useEffect(() => {
     fetchTopics();
   }, []);
 
-  const AllTopics: Topic[] = useMemo(() => {
-    if (!topics) return [];
-    return topics.map((topic: BackendTopic) => ({
-      ID: topic.ID,
-      Title: topic.Title,
-      Description: topic.Description,
-      Label: (topic.CreatedBy === username ? 'created' : 'none') as 'created' | 'none', 
-    }));
-  }, [topics, username]);
-
-  const [UITopics, setUITopics] = useState<Topic[]>([]);
-
   useEffect(() => {
-    setUITopics(AllTopics);
-  }, [AllTopics]);
-  
-  const PinnedTopics: Topic[] = []
+    if (topics) {
+      setLocalTopics(topics);
+    }
+  }, [topics]);
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
-
-  const { topicCreate } = useCreateTopic();
-
-  const filterTopics = (topics: Topic[]) => {
+  const filterBySearchTerm = (topic: BackendTopic) => {
     const term = searchTerm.toLowerCase();
-    return topics.filter(
-      t =>
-        t.Title.toLowerCase().includes(term) ||
-        t.Description.toLowerCase().includes(term)
+    return (
+      topic.Title.toLowerCase().includes(term) ||
+      topic.Description.toLowerCase().includes(term)
     );
   };
 
-  const filteredAllTopics = useMemo(() => {
-    return filterTopics(UITopics);
-  }, [AllTopics, UITopics, searchTerm]);
+  const pinnedTopics = useMemo(() => {
+    return localTopics.filter(t => t.Pinned && filterBySearchTerm(t));
+  }, [localTopics, searchTerm]);
 
-  const filteredPinnedTopics = useMemo(
-    () => filterTopics(PinnedTopics),
-    [PinnedTopics, searchTerm]
-  );
+  const otherTopics = useMemo(() => {
+    return localTopics.filter(t => !t.Pinned && filterBySearchTerm(t));
+  }, [localTopics, searchTerm]);
 
   const handleCreateSubmit = async (title: string, description: string) => {
     const createdTopic = await topicCreate(title, description);
-    const newTopic :Topic= {
-      ID: -1,
+    const newTopic: BackendTopic = {
+      ID: -1, 
       Title: createdTopic[0],
       Description: createdTopic[1],
-      Label: "created"
-    }
-    setUITopics(prev => [...prev, newTopic]);
+      Pinned: false,
+      Created: true,
+    };
+    
+    setLocalTopics(prev => [...prev, newTopic]);
     setCreateDialogOpen(false);
   };
+
+  const handlePinTopic = async (id: number) => {
+    const topic = localTopics.find(t => t.ID === id);
+    if (!topic) return;
+    
+    await topicPin(topic.Title);
+
+    setLocalTopics(prev =>
+      prev.map(t =>
+        t.ID === id ? { ...t, Pinned: !t.Pinned } : t
+      )
+    );
+  };
+
+  const handleOpenEdit = () => {
+    setEditOpen(true);
+  };
+
+  const pinnedEmptyMessage = searchTerm 
+    ? `No pinned topics found matching "${searchTerm}"`
+    : "No pinned topics yet";
+  
+  const otherEmptyMessage = searchTerm 
+    ? `No topics found matching "${searchTerm}"`
+    : "No topics yet";
 
   return (
     <Box sx={{ minHeight: '100vh' }} className="forum">
@@ -144,8 +160,9 @@ const ForumPage = () => {
         </Box>
 
         <TopicList
-          topics={filteredPinnedTopics}
-          emptyMessage={ searchTerm ? `No topics found matching "${searchTerm}"` : "none"}
+          topics={pinnedTopics}
+          emptyMessage={pinnedEmptyMessage}
+          onPin={handlePinTopic}
         />
 
         <Typography
@@ -156,8 +173,9 @@ const ForumPage = () => {
         </Typography>
 
         <TopicList
-          topics={filteredAllTopics}
-          emptyMessage={ searchTerm ? `No topics found matching "${searchTerm}"` : "none"}
+          topics={otherTopics}
+          emptyMessage={otherEmptyMessage}
+          onPin={handlePinTopic}
         />
       </Container>
 

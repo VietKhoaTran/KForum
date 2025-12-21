@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../../api/api.tsx";
 import axios from "axios";
-import {BackendTopic, Topic} from "../../types/Forum.tsx"
+import {BackendTopic} from "../../types/Forum.tsx"
 
 const useFetchTopic = () => {
     const [topics, setTopics] = useState<BackendTopic[]>([]);
@@ -14,6 +14,7 @@ const useFetchTopic = () => {
 
         try {
             const res = await api.get<BackendTopic[]>("/topic/fetch");
+            // console.log(res.data)
             setTopics(res.data)
         } catch (error) {
             if (axios.isAxiosError(error)) {

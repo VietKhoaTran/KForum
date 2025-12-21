@@ -1,23 +1,15 @@
 import { Box, Typography } from '@mui/material';
 import TopicCard from './TopicCard.tsx';
-import {Topic} from '../../types/Forum.tsx'
+import { BackendTopic } from '../../types/Forum.tsx';
 import { BRAND_PRIMARY } from './forum.constants.ts';
 
 interface Props {
-  topics: Topic[];
+  topics: BackendTopic[];
   emptyMessage?: string;
+  onPin: (id: number) => void;
 }
 
-const TopicList = ({ topics, emptyMessage }: Props) => {
-  // if (emptyMessage == "none") {
-  //   return (
-  //     <Box sx={{ py: 1 }}>
-  //       <Typography variant="h6" sx={{ color: BRAND_PRIMARY }}>
-  //         No Topics Yet
-  //       </Typography>
-  //     </Box>
-  //   );
-  // }
+const TopicList = ({ topics, emptyMessage, onPin }: Props) => {
   if (topics.length === 0) {
     return (
       <Box sx={{ textAlign: 'center', py: 8 }}>
@@ -31,7 +23,7 @@ const TopicList = ({ topics, emptyMessage }: Props) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {topics.map(topic => (
-        <TopicCard key={topic.ID} topic={topic} />
+        <TopicCard key={topic.ID} topic={topic} onPin={onPin}/>
       ))}
     </Box>
   );

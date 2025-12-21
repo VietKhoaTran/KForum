@@ -50,3 +50,28 @@ func (c *Controller) Fetch(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, topics)
 }
+
+func (c *Controller) Pin(ctx *gin.Context) {
+	usernameIface, _ := ctx.Get("username")
+	username, ok := usernameIface.(string)
+
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
+		return
+	}
+
+	var req models.PinRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	err := dataTopic.PinToggleTopic(req.Title, username)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"topic": []string{req.Title, username}})
+}
