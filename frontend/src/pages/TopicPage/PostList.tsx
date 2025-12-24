@@ -1,16 +1,31 @@
 import { Box, Typography } from '@mui/material';
 import {Post} from '../../types/Post.tsx'
 import PostCard from './PostCard.tsx';
+import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
 
 interface Props {
     posts: Post[]
+    onLike: (postId: number) => void;
 }
-const PostList = ({posts}: Props) => {
+const PostList = ({posts, onLike}: Props) => {
     return (
-        <Box sx ={{flex: '1'}}>
-            {posts.map(post => (
-                <PostCard post = {post}/>
-            ))}
+        <Box sx={{ flex: '1' }}>
+            {posts.length === 0 ? (
+            <Typography
+                variant="body1"
+                fontSize={30}
+                align="center"
+                sx={{ mt: 10,
+                    color: BRAND_PRIMARY
+                }}
+            >
+                No posts yet. Be the first to create one.
+            </Typography>
+            ) : (
+            posts.map(post => (
+                <PostCard key={post.ID} post={post} onLike={onLike}/>
+            ))
+            )}
         </Box>
     );
 }

@@ -1,9 +1,10 @@
 export interface Post {
   ID: number;
-  Topic: string;
+  // Topic: string;
   Title: string;
   Details: string;
   NoLikes: number;
   NoComments: number;
+  Liked: boolean;
   CreatedBy: string;
 }

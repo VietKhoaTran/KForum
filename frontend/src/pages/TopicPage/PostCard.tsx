@@ -1,14 +1,20 @@
 import { Card, CardContent, Typography, Box, IconButton } from '@mui/material';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Post } from '../../types/Post';
-import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
 
 interface PostCardProps {
   post: Post;
+  onLike: (postId: number) => void;
 }
 
-const PostCard = ({ post }: PostCardProps) => {
+const PostCard = ({ post, onLike }: PostCardProps) => {
+  const handleLike = () => {
+    onLike(post.ID);
+  }
+
   return (
     <Card 
       sx={{ 
@@ -26,15 +32,15 @@ const PostCard = ({ post }: PostCardProps) => {
       
       <CardContent sx={{ py: 3, px: 3 }}>
         <Typography 
-            sx = {{
-                color: '#955d14ff ',
-                mb: 1,
-                display: 'block',
-                fontWeight: 600,
-            }}
+          sx={{
+            color: '#955d14ff',
+            mb: 1,
+            fontWeight: 600,
+          }}
         >
-            K/{post.CreatedBy}
+          K/{post.CreatedBy}
         </Typography>
+
         <Typography 
           variant="h6" 
           sx={{ 
@@ -50,43 +56,41 @@ const PostCard = ({ post }: PostCardProps) => {
           {post.Details}
         </Typography>
         
-        {/* Interaction Section */}
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <InteractionButton 
-            icon={<FavoriteBorderOutlinedIcon fontSize="small" />}
-            count={post.NoLikes}
-          />
-          <InteractionButton 
-            icon={<ChatBubbleOutlineOutlinedIcon fontSize="small" />}
-            count={post.NoComments}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <IconButton 
+              size="small" 
+              sx={{ 
+                color: '#666',
+                '&:hover': { color: BRAND_PRIMARY }
+              }}
+              onClick={handleLike}
+            >
+              {post.Liked ? <FavoriteIcon fontSize="small" /> : <FavoriteBorderOutlinedIcon fontSize="small" />}
+            </IconButton>
+            <Typography sx={{ color: BRAND_PRIMARY, fontSize: '0.9rem' }}>
+              {post.NoLikes}
+            </Typography>
+          </Box>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <IconButton 
+              size="small" 
+              sx={{ 
+                color: '#666',
+                '&:hover': { color: BRAND_PRIMARY }
+              }}
+            >
+              <ChatBubbleOutlineOutlinedIcon fontSize="small" />
+            </IconButton>
+            <Typography sx={{ color: BRAND_PRIMARY, fontSize: '0.9rem' }}>
+              {post.NoComments}
+            </Typography>
+          </Box>
         </Box>
       </CardContent>
     </Card>
   );
 };
-
-// Extracted interaction button component
-interface InteractionButtonProps {
-  icon: React.ReactNode;
-  count: number;
-}
-
-const InteractionButton = ({ icon, count }: InteractionButtonProps) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-    <IconButton 
-      size="small" 
-      sx={{ 
-        color: '#666',
-        '&:hover': { color: BRAND_PRIMARY }
-      }}
-    >
-      {icon}
-    </IconButton>
-    <Typography sx={{ color: BRAND_PRIMARY, fontSize: '0.9rem' }}>
-      {count}
-    </Typography>
-  </Box>
-);
 
 export default PostCard;

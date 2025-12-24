@@ -1,65 +1,88 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Button } from '@mui/material';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import Header from '../Header.tsx';
 import PostList from './PostList.tsx';
 import { Post } from '../../types/Post.tsx';
 import { BRAND_PRIMARY, PRIMARY_BUTTON_STYLES } from '../ForumPage/forum.constants.ts';
 import '../Page.css';
-
-const MOCK_POSTS: Post[] = [
-  {
-    ID: 1,
-    Topic: "Machine Learning Basics",
-    Title: "What Is Machine Learning and Why Does It Matter?",
-    Details: "Machine learning is a field of artificial intelligence that enables computers to learn from data instead of being explicitly programmed. This post introduces the basic concept of machine learning and explains why it plays a crucial role in modern technology such as recommendation systems and search engines.",
-    NoLikes: 24,
-    NoComments: 8,
-    CreatedBy: "Sarah Chen"
-  },
-  {
-    ID: 2,
-    Topic: "Learning Methods",
-    Title: "Supervised vs Unsupervised Learning: A Beginner's Guide",
-    Details: "This post explains the difference between supervised and unsupervised learning. It covers common examples like classification, regression, and clustering, helping beginners understand when and why each approach is used.",
-    NoLikes: 15,
-    NoComments: 5,
-    CreatedBy: "Alex Kumar"
-  },
-  {
-    ID: 3,
-    Topic: "Terminology",
-    Title: "Key Terminologies in Machine Learning",
-    Details: "New to machine learning? This post breaks down essential terms such as dataset, features, labels, model, training, testing, and overfitting in a clear and beginner-friendly way.",
-    NoLikes: 32,
-    NoComments: 12,
-    CreatedBy: "Emma Rodriguez"
-  },
-  {
-    ID: 4,
-    Topic: "Model Training",
-    Title: "How Does a Machine Learning Model Learn?",
-    Details: "This post walks through the training process of a machine learning model, explaining how data is used to make predictions, calculate errors, and gradually improve performance over time.",
-    NoLikes: 19,
-    NoComments: 6,
-    CreatedBy: "James Park"
-  },
-  {
-    ID: 5,
-    Topic: "Applications",
-    Title: "Real-World Applications of Machine Learning",
-    Details: "From spam detection and facial recognition to healthcare and finance, this post explores how machine learning is applied in real-life scenarios and why it is so impactful.",
-    NoLikes: 41,
-    NoComments: 15,
-    CreatedBy: "Priya Sharma"
-  }
-];
-
-const TOPIC_TITLE = 'Introduction to Machine Learning';
+import CreateCard from './CreateCard.tsx';
+import useCreatePost from '../../hooks/post/useCreatePost.tsx';
+import useFetchPost from '../../hooks/post/useFetchPost.tsx';
+import useLikePost from '../../hooks/post/useLikePost.tsx';
 
 const TopicPage = () => {
   const { username } = useOutletContext<{ username: string }>();
-  const [searchTerm, setSearchTerm] = useState('');
+  const {topic} = useParams<string>();
+
+  const topicTitle = topic?.replaceAll('_', ' ');
+  
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
+
+  const {postCreate} = useCreatePost();
+  const {likePost} = useLikePost();
+  const {posts, fetchPosts} = useFetchPost();
+
+  const [localPosts, setLocalPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    if (topicTitle) {
+      fetchPosts(topicTitle);
+    }
+  }, [])
+
+  // console.log(posts)
+
+  useEffect(() => {
+    setLocalPosts(posts
+    ? posts.map(post => ({
+        ID: post.ID,
+        Title: post.Title,
+        Details: post.Details,
+        NoLikes: post.NoLikes,
+        NoComments: 0,
+        Liked: post.Liked,
+        CreatedBy: post.CreatedBy,
+      }))
+    : []);
+  }, [posts])
+
+  // console.log(localPosts)
+
+  const handleCreateSubmit = async (title: string, details: string) => {
+    if (topicTitle) {
+      const data = await postCreate(title, details, topicTitle)
+      const newPost: Post = {
+        ID: -1,
+        Title: data[0],
+        Details: data[1],
+        NoLikes: 0,
+        NoComments: 0,
+        Liked: false, 
+        CreatedBy: username,
+      };
+
+      setLocalPosts(prev => [...prev, newPost]);
+    }
+    setCreateDialogOpen(false);
+  };
+
+  const handleToggleLike = async (postID: number) => {
+    const post = localPosts.find(p => p.ID === postID);
+    if (!post) return;
+
+    const NoLikes = await likePost(post.Title);
+
+    setLocalPosts(prev =>
+      prev.map(p =>
+        p.ID === postID
+          ? { ...p, NoLikes, Liked: !p.Liked }
+          : p
+      )
+    );
+  };
+
 
   return (
     <Box sx={{ minHeight: '100vh' }} className="forum">
@@ -86,7 +109,7 @@ const TopicPage = () => {
               color: BRAND_PRIMARY
             }}
           >
-            {TOPIC_TITLE}
+            {topicTitle}
           </Typography>
 
           <Button
@@ -95,12 +118,21 @@ const TopicPage = () => {
               ...PRIMARY_BUTTON_STYLES,
               borderRadius: '15px',
             }}
+            onClick={() => setCreateDialogOpen(true)}
           >
             Create a Post
           </Button>
         </Box>
 
-        <PostList posts={MOCK_POSTS} />
+        <PostList 
+          posts={localPosts} 
+          onLike = {handleToggleLike}
+        />
+        <CreateCard
+          open={createDialogOpen}
+          onClose={() => setCreateDialogOpen(false)}
+          onSubmit={handleCreateSubmit}
+        />
       </Container>
     </Box>
   );

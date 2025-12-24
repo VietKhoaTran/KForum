@@ -1,8 +1,8 @@
 CREATE TABLE posts (
     id SERIAL PRIMARY KEY,
     topic_id INTEGER NOT NULL,
-    title VARCHAR(255),
-    details TEXT,
+    title VARCHAR(255) NOT NULL,
+    details TEXT NOT NULL,
     created_by INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
 
@@ -32,6 +32,6 @@ CREATE TABLE post_likes (
         REFERENCES posts(id)
         ON DELETE CASCADE,
 
-    -- prevents a user from liking the same post multiple times
+    -- prevents users from having multiple likes for one post
     CONSTRAINT unique_user_post_like UNIQUE (user_id, post_id)
 );
