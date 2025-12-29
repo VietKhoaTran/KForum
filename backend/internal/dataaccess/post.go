@@ -57,26 +57,38 @@ func FetchPost(username string, topicTitle string) ([]models.PostReturn, error) 
 
 	const query = `
 		SELECT 
-			p.id,
-			p.title,
-			p.details, 
+			p.id, 
+			p.title, 
+			p.details,
 			u.username,
-			p.edited, 
+			p.edited,
 			p.edited_at,
-			COUNT(pl.id) AS like_count,
-			CASE
+
+			(
+				SELECT COUNT(*)
+				FROM post_likes pl
+				WHERE pl.post_id = p.id
+			) AS like_count,
+
+			(
+				SELECT COUNT(*)
+				FROM comments c
+				WHERE c.post_id = p.id
+			) AS comment_count,
+
+			CASE 
 				WHEN EXISTS (
-					SELECT 1 FROM post_likes pl2
-					WHERE pl2.user_id = $1 AND pl2.post_id = p.id
+					SELECT 1
+					FROM post_likes pl2
+					WHERE pl2.user_id = $1
+					AND pl2.post_id = p.id
 				) THEN TRUE
 				ELSE FALSE
 			END AS liked
 
 		FROM posts p
 		JOIN users u ON p.created_by = u.id
-		LEFT JOIN post_likes pl ON p.id = pl.post_id
-		WHERE p.topic_id = $2
-		GROUP BY p.id, p.title, p.details, u.username, p.edited, p.edited_at;
+		WHERE p.topic_id = $2;
 	`
 
 	rows, err := db.QueryContext(ctx, query, userID, topicID)
@@ -97,6 +109,7 @@ func FetchPost(username string, topicTitle string) ([]models.PostReturn, error) 
 			&post.Edited,
 			&post.EditedAt,
 			&post.NoLikes,
+			&post.NoComments,
 			&post.Liked,
 		); err != nil {
 			return nil, err
@@ -108,16 +121,11 @@ func FetchPost(username string, topicTitle string) ([]models.PostReturn, error) 
 	return posts, nil
 }
 
-func Fetch1Post(username string, postTitle string) (models.PostReturn, error) {
+func Fetch1Post(username string, postID int) (models.PostReturn, error) {
 	db := database.Connect()
 	defer database.Close(db)
 
 	ctx := context.Background()
-
-	postID, err := utils.GetPostID(ctx, db, postTitle)
-	if err != nil {
-		return models.PostReturn{}, err
-	}
 
 	userID, err := utils.GetUserID(ctx, db, username)
 	if err != nil {
@@ -126,26 +134,38 @@ func Fetch1Post(username string, postTitle string) (models.PostReturn, error) {
 
 	const query = `
 		SELECT 
-			p.id,
-			p.title,
+			p.id, 
+			p.title, 
 			p.details,
 			u.username,
-			p.edited, 
+			p.edited,
 			p.edited_at,
-			COUNT(pl.id) AS like_count,
-			CASE
+
+			(
+				SELECT COUNT(*)
+				FROM post_likes pl
+				WHERE pl.post_id = p.id
+			) AS like_count,
+
+			(
+				SELECT COUNT(*)
+				FROM comments c
+				WHERE c.post_id = p.id
+			) AS comment_count,
+
+			CASE 
 				WHEN EXISTS (
-					SELECT 1 
-					FROM post_likes pl2 
-					WHERE pl2.user_id = $1 AND pl2.post_id = p.id
+					SELECT 1
+					FROM post_likes pl2
+					WHERE pl2.user_id = $1
+					AND pl2.post_id = p.id
 				) THEN TRUE
 				ELSE FALSE
 			END AS liked
+
 		FROM posts p
 		JOIN users u ON p.created_by = u.id
-		LEFT JOIN post_likes pl ON p.id = pl.post_id
-		WHERE p.id = $2
-		GROUP BY p.id, p.title, p.details, u.username, p.edited, p.edited_at;
+		WHERE p.id = $2;
 	`
 
 	var post models.PostReturn
@@ -157,6 +177,7 @@ func Fetch1Post(username string, postTitle string) (models.PostReturn, error) {
 		&post.Edited,
 		&post.EditedAt,
 		&post.NoLikes,
+		&post.NoComments,
 		&post.Liked,
 	)
 	if err != nil {
@@ -208,7 +229,7 @@ func LikePost(postTitle string, username string) (int, error) {
 
 	const queryUnlike = `
 		DELETE FROM post_likes 
-		WHERE user_id = $1 AND post_id = $2;
+		WHERE user_id = $1 ANDc post_id = $2;
 	`
 
 	const queryLike = `

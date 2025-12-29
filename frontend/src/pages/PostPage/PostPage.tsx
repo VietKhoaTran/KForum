@@ -8,12 +8,12 @@ import {
   Container,
   TextField,
 } from '@mui/material';
-import { replace, useOutletContext, useParams } from 'react-router-dom';
+import {useOutletContext, useParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 
 import Header from '../Header.tsx';
 import CommentCard from './CommentCard.tsx';
-import PostAction from './Action.tsx';
+import Action from './Action.tsx';
 import { Post } from '../../types/Post.tsx';
 import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from '../ForumPage/forum.constants.ts';
 
@@ -22,61 +22,76 @@ import useLikePost from '../../hooks/post/useLikePost.tsx';
 
 import EditCard from './EditCard.tsx';
 import { timeAgo } from '../../utils/TimeAgo.tsx';
-// import { Details } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import useCreateComment from '../../hooks/comment/userCreateComment.tsx';
-
-const MOCK_COMMENTS = [
-  {
-    name: '0Khoa',
-    comment:
-      'Great overview of how machine learning shows up in apps we use every day.',
-  },
-  {
-    name: '1Khoa',
-    comment:
-      'Nice explanation! Spam detection example was especially interesting.',
-  },
-  {
-    name: '2Khoa',
-    comment:
-      'Very beginner-friendly post. Machine learning feels less intimidating now.',
-  },
-  {
-    name: '3Khoa',
-    comment:
-      'It’s amazing how much ML works behind the scenes without us noticing.',
-  },
-];
+import useFetchComments from '../../hooks/comment/useFetchComment.tsx';
+import { useLocation } from 'react-router-dom';
+import useLikeComment from '../../hooks/comment/useLikeComment.tsx';
+import useReplyComment from '../../hooks/comment/useReplyComment.tsx';
+import { Comment } from '../../types/Comment.tsx';
 
 const PostPage = () => {
   const { post } = useParams<string>();
+  // const title = post ? decodeURIComponent(post).replaceAll('_', ' ') : '';
   const title = post?.replaceAll('_', ' ');
+  // console.log(title)
   const { username } = useOutletContext<{ username: string }>();
   const [localPost, setLocalPost] = useState<Post | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [commentText, setCommentText] = useState<string>('');
   const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
   const {likePost} = useLikePost();
+  const {likeComment} = useLikeComment();
 
   const {commentCreate} = useCreateComment();
 
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const {postID} = location.state || {};
 
   const { postFetch, fetch1Post } = useFetch1Post();
+  const {commentReply} = useReplyComment();
 
+  const {comments, fetchComments} = useFetchComments();
+  const [localComments, setLocalComments] = useState<Comment[]>([]);
   // if (postFetch) {return}
 
   useEffect(() => {
-    if (title) {
-      fetch1Post(title);
+    if (postID) {
+      fetch1Post(postID);
     }
-  }, [title]);
+  }, [postID]);
 
   useEffect(() => {
     if (postFetch) setLocalPost(postFetch);
   }, [postFetch]);
+
+  useEffect(() => {
+    if (localPost) {
+      fetchComments(localPost.ID)
+    }
+  }, [localPost])
+
+  useEffect(() => {
+    if (!comments) {
+      setLocalComments([]);
+      return;
+    }
+
+    setLocalComments(
+      comments.map(comment => ({
+        ID: comment.ID,
+        Comment: comment.Comment,
+        CreatedBy: comment.CreatedBy,
+        CreatedAt: comment.CreatedAt,
+        Edited: comment.Edited,
+        EditedAt: comment.EditedAt,
+        NoLikes: comment.NoLikes,
+        Liked: comment.Liked,
+        NoComments: comment.NoComments,
+      }))
+    );
+  }, [comments]);
 
   const isPostOwner = localPost?.CreatedBy === username;
 
@@ -98,8 +113,27 @@ const PostPage = () => {
   const handleSubmitComment = async() => {
     if (!commentText.trim()) return;
     if (localPost) {
-      console.log(commentText, localPost.ID)
-      await commentCreate(commentText, localPost.ID)
+      // console.log(commentText, localPost.ID)
+      const data = await commentCreate(commentText, localPost.ID)
+      const newComment : Comment = {
+        ID: -1,
+        Comment: data,
+        CreatedBy: username,
+        NoLikes: 0,
+        CreatedAt: null,
+        Edited: false,
+        EditedAt: null,
+      }
+      setLocalComments(prev => [...prev, newComment])
+
+      setLocalPost(prev =>
+            prev
+                ? {
+                    ...prev,
+                    NoComments: prev.NoComments + 1,
+                }
+                : prev
+        );
     }
     setCommentText('');
   };
@@ -121,7 +155,45 @@ const PostPage = () => {
       navigate(`/post/${newPost.Title}`, {replace: true})
     }
   }
+
+  const handleUpdateComment = (ID: number, updatedComment: string) => {
+    setLocalComments(prev =>
+      prev?.map(comment =>
+        comment.ID === ID
+          ? { 
+              ...comment, 
+              Comment: updatedComment, 
+              Edited: true, 
+              EditedAt: new Date().toISOString() 
+            }
+          : comment
+      )
+    );
+  };
+
+  const handleDeleteComment = (commentID: number) => {
+    setLocalComments(prev => prev.filter(comment => comment.ID !== commentID));
+  }
   
+  const handleToggleLikeComment = async (commentID: number) => {
+    const comment = localComments.find(p => p.ID === commentID);
+    if (!comment) return;
+
+    const NoLikes = await likeComment(comment?.ID);
+
+    setLocalComments(prev =>
+      prev.map(c =>
+        c.ID === commentID
+          ? { ...c, NoLikes, Liked: !c.Liked }
+          : c
+      )
+    );
+  };
+
+  const handleReplyComment = async(commentID: number, reply: string) => {
+    await commentReply(reply, commentID, postID)
+  }
+
   if (!localPost) return <Typography>Loading post...</Typography>;
 
   return (
@@ -173,7 +245,7 @@ const PostPage = () => {
               {localPost.Details}
             </Typography>
 
-            <PostAction
+            <Action
               liked={localPost.Liked}
               noLikes={localPost.NoLikes}
               noComments={localPost.NoComments}
@@ -205,8 +277,15 @@ const PostPage = () => {
         />
 
         <Box>
-          {MOCK_COMMENTS.map((comment, index) => (
-            <CommentCard key={index} comment={comment} />
+          {localComments.map((comment, index) => (
+            <CommentCard 
+              key={index} 
+              comment={comment} 
+              onSave={handleUpdateComment} 
+              onDelete={handleDeleteComment} 
+              onLike={handleToggleLikeComment}
+              onReply={handleReplyComment}
+            />
           ))}
         </Box>
       </Container>
@@ -217,7 +296,7 @@ const PostPage = () => {
         post={localPost}
         onSave={handleUpdate}
         // username={username}
-      />
+      />    
     </Box>
   );
 };

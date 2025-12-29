@@ -19,11 +19,12 @@ import {
 
 import useUpdateTopic from '../../hooks/topic/useUpdateTopic.tsx';
 import useDeleteTopic from '../../hooks/topic/useDeleteTopic.tsx';
+import { Topic } from '../../types/Forum.tsx';
 
 interface EditCardProps {
   open: boolean;
   onClose: () => void;
-  topicID: number;
+  topic: Topic;
   onUpdate: (id: number, newTitle: string, newDescription: string) => void;
   onDelete: (id: number) => void;
 }
@@ -31,12 +32,12 @@ interface EditCardProps {
 const EditCard = ({
   open,
   onClose,
-  topicID,
+  topic,
   onUpdate,
   onDelete,
 }: EditCardProps) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState<string>(topic.Title || '');
+  const [description, setDescription] = useState(topic.Description || '');
 
   const { topicUpdate } = useUpdateTopic();
   const { topicDelete } = useDeleteTopic();
@@ -56,14 +57,14 @@ const EditCard = ({
   const handleSubmit = async () => {
     if (!isFormValid) return;
 
-    await topicUpdate(topicID, title, description);
-    onUpdate(topicID, title, description);
+    await topicUpdate(topic.ID, title, description);
+    onUpdate(topic.ID, title, description);
     handleClose();
   };
 
   const handleDelete = async () => {
-    await topicDelete(topicID);
-    onDelete(topicID);
+    await topicDelete(topic.ID);
+    onDelete(topic.ID);
     handleClose();
   };
 

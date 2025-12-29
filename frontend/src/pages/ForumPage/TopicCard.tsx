@@ -118,7 +118,7 @@ const TopicCard = ({ topic, onPin, onUpdate, onDelete }: Props) => {
       <EditCard
         open={editOpen}
         onClose={() => setEditOpen(false)}
-        topicID={topic.ID}
+        topic={topic}
         onUpdate={onUpdate}
         onDelete={onDelete}
       />

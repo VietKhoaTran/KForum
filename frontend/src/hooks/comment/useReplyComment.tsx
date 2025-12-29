@@ -2,33 +2,33 @@ import { useState } from "react";
 import api from "../../api/api.tsx";
 import axios from "axios";
 
-const useCreateComment = () => {
+const useReplyComment = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const commentCreate = async(comment: string, postID: number) => {
+    const commentReply = async(reply: string, commentID: number, postID: number) => {
         setLoading(true);
         setError(null);
 
         try {
-            const res = await api.post("/comment/create", {
-                comment: comment,
+            const res = await api.post('/comment/reply/', {
+                reply: reply,
+                commentID: commentID,
                 postID: postID
             });
-            // console.log(res)
-            return (res.data.comment);
+            return (res.data.reply);
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                alert(error.response?.data?.error ?? "Create failed")
+                alert(error.response?.data?.error ?? "Reply failed")
             } else {
-                alert("Create failed")
+                alert("Reply failed")
             }
         } finally {
             setLoading(false)
         }
     }
 
-    return {commentCreate, error, loading}
+    return {commentReply, error, loading}
 }
 
-export default useCreateComment;
+export default useReplyComment;

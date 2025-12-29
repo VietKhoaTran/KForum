@@ -4,7 +4,7 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
 
-interface PostActionsProps {
+interface ActionsProps {
   liked: boolean;
   noLikes: number;
   noComments: number;
@@ -12,7 +12,7 @@ interface PostActionsProps {
   onComment?: () => void;
 }
 
-const PostAction = ({ liked, noLikes, noComments, onLike, onComment }: PostActionsProps) => {
+const Action = ({ liked, noLikes, noComments, onLike, onComment }: ActionsProps) => {
   return (
     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
       {/* Like Button */}
@@ -50,4 +50,4 @@ const PostAction = ({ liked, noLikes, noComments, onLike, onComment }: PostActio
   );
 };
 
-export default PostAction;
+export default Action;

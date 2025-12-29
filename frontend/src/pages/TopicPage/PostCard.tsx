@@ -1,8 +1,7 @@
 import { Card, CardContent, Typography, Box, IconButton } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 
 import { Post } from '../../types/Post';
-import PostAction from '../PostPage/Action.tsx';
+import Action from '../PostPage/Action.tsx';
 import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from '../ForumPage/forum.constants.ts';
 // import { Edit } from 'lucide-react';
 
@@ -19,6 +18,13 @@ const PostCard = ({ post, onLike, username }: PostCardProps) => {
   const navigate = useNavigate();
   const handleLike = () => {
     onLike(post.ID);
+  }
+
+  const handleNavigate = () => {
+    const postTitle = encodeURIComponent(post.Title.replaceAll(' ', '_'));
+    navigate(`/post/${postTitle}`, {
+      state: {postID: post.ID}
+    });
   }
 
   return (
@@ -64,21 +70,6 @@ const PostCard = ({ post, onLike, username }: PostCardProps) => {
               {post.Title}
             </Typography>
           </Box>
-
-          {/* {post.CreatedBy === username && (
-            <IconButton
-              size="small"
-              sx={{
-                color: BRAND_PRIMARY_HOVER,
-                '&:hover': {
-                  backgroundColor: '#efd5cdff',
-                },
-              }}
-              // onClick={handleOpenEdit}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          )} */}
         </Box>
 
         {post.Edited && post.EditedAt && (
@@ -92,19 +83,17 @@ const PostCard = ({ post, onLike, username }: PostCardProps) => {
 
         <Typography 
           sx={{ color: BRAND_PRIMARY, mb: 2 }}
-          onClick = {() => navigate(`/post/${post.Title.replaceAll(' ', '_')}`, {
-            state: {post}
-          })}
+          onClick = {() => handleNavigate()}
         >
           {post.Details}
         </Typography>
         
-        <PostAction
+        <Action
           liked={post.Liked}
           noLikes={post.NoLikes}
           noComments={post.NoComments}
           onLike={handleLike}
-          // onComment={}
+          onComment={handleNavigate}
         />
       </CardContent>
     </Card>

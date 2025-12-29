@@ -9,12 +9,24 @@ type CommentCreate struct {
 	PostID  int    `json:"postID" binding:"required"`
 }
 
+type CommentReply struct {
+	Reply     string `json:"reply" binding:"required"`
+	CommentID int    `json:"commentID" binding:"required"`
+	PostID    int    `json:"postID" binding:"required"`
+}
+
 type CommentReturn struct {
-	ID      int    `json:"ID"`
-	Comment string `json:"Comment"`
-	// NoLikes   int        `json:"NoLikes"`
-	// Liked     bool       `json:"Liked"`
-	Edited    bool       `json:"Edited"`
-	EditedAt  *time.Time `json:"EditedAt"`
-	CreatedBy string     `json:"CreatedBy"`
+	ID         int        `json:"ID"`
+	Comment    string     `json:"Comment"`
+	NoLikes    int        `json:"NoLikes"`
+	NoComments int        `json:NoComments`
+	Liked      bool       `json:"Liked"`
+	CreatedAt  *time.Time `json: CreatedAt`
+	Edited     bool       `json:"Edited"`
+	EditedAt   *time.Time `json:"EditedAt"`
+	CreatedBy  string     `json:"CreatedBy"`
+}
+
+type CommentUpdate struct {
+	Comment string `json:"comment" binding:"required"`
 }

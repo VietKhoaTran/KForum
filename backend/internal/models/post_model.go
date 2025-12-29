@@ -10,14 +10,15 @@ type PostCreate struct {
 }
 
 type PostReturn struct {
-	ID        int        `json:"ID"`
-	Title     string     `json:"Title"`
-	Details   string     `json:"Details"`
-	NoLikes   int        `json:"NoLikes"`
-	Liked     bool       `json:"Liked"`
-	Edited    bool       `json:"Edited"`
-	EditedAt  *time.Time `json:"EditedAt"`
-	CreatedBy string     `json:"CreatedBy"`
+	ID         int        `json:"ID"`
+	Title      string     `json:"Title"`
+	Details    string     `json:"Details"`
+	NoLikes    int        `json:"NoLikes"`
+	NoComments int        `json:NoComments`
+	Liked      bool       `json:"Liked"`
+	Edited     bool       `json:"Edited"`
+	EditedAt   *time.Time `json:"EditedAt"`
+	CreatedBy  string     `json:"CreatedBy"`
 }
 
 type PostLike struct {

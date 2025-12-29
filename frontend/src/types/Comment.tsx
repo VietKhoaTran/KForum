@@ -1,7 +1,13 @@
 export interface Comment {
-  name: string;
-  comment: string;
-  liked?: boolean;
-  noLikes?: number;
-  noComments?: number;
+  ID: number,
+  Comment: string;
+  CreatedBy: string;
+  
+  CreatedAt: string | null;
+  Edited: boolean;
+  EditedAt: string | null;
+
+  Liked?: boolean;
+  NoLikes: number;
+  NoComments?: number;
 }

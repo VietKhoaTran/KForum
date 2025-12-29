@@ -63,8 +63,14 @@ func (c *Controller) Fetch1(ctx *gin.Context) {
 		return
 	}
 
-	postTitle := ctx.Param("postTitle")
-	post, err := dataaccess.Fetch1Post(username, postTitle)
+	postIDString := ctx.Param("postID")
+	postID, err := strconv.Atoi(postIDString)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	post, err := dataaccess.Fetch1Post(username, postID)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch 1 post"})

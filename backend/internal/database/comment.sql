@@ -5,6 +5,8 @@ CREATE TABLE comments (
     comment VARCHAR(255) NOT NULL,
     parent_comment INTEGER DEFAULT NULL,
 
+    no_replies INTEGER DEFAULT 0,
+
     created_by INTEGER NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
@@ -25,4 +27,23 @@ CREATE TABLE comments (
         FOREIGN KEY (parent_comment)
         REFERENCES comments(id)
         ON DELETE SET NULL
+);
+
+CREATE TABLE comment_likes (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+
+    CONSTRAINT fk_comment_likes_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_comment_likes_comment
+        FOREIGN KEY (comment_id)
+        REFERENCES comments(id)
+        ON DELETE CASCADE,
+
+    -- prevents users from having multiple likes for one comment
+    CONSTRAINT unique_user_comment_like UNIQUE (user_id, comment_id)
 );

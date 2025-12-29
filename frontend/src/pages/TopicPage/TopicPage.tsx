@@ -34,6 +34,8 @@ const TopicPage = () => {
     }
   }, [])
 
+  // console.log(posts)
+
   useEffect(() => {
     setLocalPosts(posts
     ? posts.map(post => ({
@@ -41,7 +43,7 @@ const TopicPage = () => {
         Title: post.Title,
         Details: post.Details,
         NoLikes: post.NoLikes,
-        NoComments: 0,
+        NoComments: post.NoComments,
         Edited: post.Edited,
         EditedAt: post.EditedAt,
         Liked: post.Liked,
