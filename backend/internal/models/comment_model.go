@@ -16,15 +16,16 @@ type CommentReply struct {
 }
 
 type CommentReturn struct {
-	ID         int        `json:"ID"`
-	Comment    string     `json:"Comment"`
-	NoLikes    int        `json:"NoLikes"`
-	NoComments int        `json:NoComments`
-	Liked      bool       `json:"Liked"`
-	CreatedAt  *time.Time `json: CreatedAt`
-	Edited     bool       `json:"Edited"`
-	EditedAt   *time.Time `json:"EditedAt"`
-	CreatedBy  string     `json:"CreatedBy"`
+	ID            int        `json:"ID"`
+	Comment       string     `json:"Comment"`
+	NoLikes       int        `json:"NoLikes"`
+	NoComments    int        `json:NoComments`
+	Liked         bool       `json:"Liked"`
+	CreatedAt     *time.Time `json: CreatedAt`
+	Edited        bool       `json:"Edited"`
+	EditedAt      *time.Time `json:"EditedAt"`
+	CreatedBy     string     `json:"CreatedBy"`
+	ParentComment *int       `json:"ParentComment`
 }
 
 type CommentUpdate struct {

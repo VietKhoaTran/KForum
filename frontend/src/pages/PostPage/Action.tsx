@@ -7,7 +7,7 @@ import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
 interface ActionsProps {
   liked: boolean;
   noLikes: number;
-  noComments: number;
+  noComments?: number;
   onLike?: () => void;
   onComment?: () => void;
 }
@@ -15,7 +15,6 @@ interface ActionsProps {
 const Action = ({ liked, noLikes, noComments, onLike, onComment }: ActionsProps) => {
   return (
     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-      {/* Like Button */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
         <IconButton
           size="small"
@@ -33,7 +32,6 @@ const Action = ({ liked, noLikes, noComments, onLike, onComment }: ActionsProps)
         </Typography>
       </Box>
 
-      {/* Comment Button */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
         <IconButton
           size="small"

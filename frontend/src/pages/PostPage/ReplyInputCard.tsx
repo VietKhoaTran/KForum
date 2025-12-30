@@ -16,35 +16,20 @@ const ReplyInputCard = ({onReply}: ReplyProps) => {
   }
 
   return (
-    <Card
-      sx={{
-        mb: 2,
-        borderRadius: 2,
-        boxShadow: 1,
-        borderLeft: '3px solid #AE887B',
-        bgcolor: 'transparent',
-      }}
-    >
-      <CardContent>
+    <Box sx ={{
+      border: '1px solid #AE887B',
+      borderRadius: 5,
+      marginBottom: 3,
+    }}>
+      <CardContent sx={{ py: 1, px: 2}}>
         <TextField
           value={reply}
           onChange={(e) => setReply(e.target.value)}
           fullWidth
-          multiline
           placeholder="Write a reply..."
-          variant="outlined"
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#AE887B',
-              },
-              '&:hover fieldset': {
-                borderColor: '#955d14ff',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#955d14ff',
-              },
-            },
+          variant="standard"
+          InputProps={{
+            disableUnderline: true,
           }}
         />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
@@ -55,13 +40,14 @@ const ReplyInputCard = ({onReply}: ReplyProps) => {
               color: 'white',
               textTransform: 'none',
               '&:hover': { bgcolor: '#955d14ff' },
+              borderRadius: 5
             }}
           >
             Reply
           </Button>
         </Box>
       </CardContent>
-    </Card>
+    </Box>
   );
 };
 

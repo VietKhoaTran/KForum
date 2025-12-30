@@ -10,4 +10,5 @@ export interface Comment {
   Liked?: boolean;
   NoLikes: number;
   NoComments?: number;
+  ParentComment: number | null;
 }

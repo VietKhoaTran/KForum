@@ -4,9 +4,7 @@ CREATE TABLE comments (
 
     comment VARCHAR(255) NOT NULL,
     parent_comment INTEGER DEFAULT NULL,
-
-    no_replies INTEGER DEFAULT 0,
-
+    
     created_by INTEGER NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 

@@ -64,11 +64,17 @@ func FetchComment(username string, postID int) ([]models.CommentReturn, error) {
 				ELSE FALSE
 			END AS liked,
 
-			c.no_replies
+			(
+				SELECT COUNT(*)
+				FROM comments c2
+				WHERE c2.parent_comment = c.id
+			) AS reply_count,
+
+			c.parent_comment
 			
 		FROM comments c
 		JOIN users u ON c.created_by = u.id
-		WHERE c.post_id = $1 AND c.parent_comment IS NULL;
+		WHERE c.post_id = $1;
 	`
 	rows, err := db.QueryContext(ctx, query, postID, userID)
 
@@ -92,6 +98,7 @@ func FetchComment(username string, postID int) ([]models.CommentReturn, error) {
 			&comment.NoLikes,
 			&comment.Liked,
 			&comment.NoComments,
+			&comment.ParentComment,
 		); err != nil {
 			return nil, err
 		}
@@ -243,7 +250,11 @@ func FetchReply(username string, commentID int) ([]models.CommentReturn, error) 
 				ELSE FALSE
 			END AS liked,
 
-			c.no_replies
+			(
+				SELECT COUNT(*)
+				FROM comments c2
+				WHERE c2.parent_comment = c.id
+			) AS comment_count
 			
 		FROM comments c
 		JOIN users u ON c.created_by = u.id

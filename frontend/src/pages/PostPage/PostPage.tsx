@@ -66,6 +66,7 @@ const PostPage = () => {
     if (postFetch) setLocalPost(postFetch);
   }, [postFetch]);
 
+
   useEffect(() => {
     if (localPost) {
       fetchComments(localPost.ID)
@@ -89,6 +90,7 @@ const PostPage = () => {
         NoLikes: comment.NoLikes,
         Liked: comment.Liked,
         NoComments: comment.NoComments,
+        ParentComment: comment.ParentComment
       }))
     );
   }, [comments]);
@@ -123,6 +125,7 @@ const PostPage = () => {
         CreatedAt: null,
         Edited: false,
         EditedAt: null,
+        ParentComment: null,
       }
       setLocalComments(prev => [...prev, newComment])
 
@@ -176,10 +179,10 @@ const PostPage = () => {
   }
   
   const handleToggleLikeComment = async (commentID: number) => {
-    const comment = localComments.find(p => p.ID === commentID);
+    const comment = localComments.find(c => c.ID === commentID);
     if (!comment) return;
 
-    const NoLikes = await likeComment(comment?.ID);
+    const NoLikes = await likeComment(commentID);
 
     setLocalComments(prev =>
       prev.map(c =>
@@ -277,7 +280,8 @@ const PostPage = () => {
         />
 
         <Box>
-          {localComments.map((comment, index) => (
+          {/* Only show the comments, not replies */}
+          {localComments.filter(comment => comment.ParentComment == null).map((comment, index) => (
             <CommentCard 
               key={index} 
               comment={comment} 
