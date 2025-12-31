@@ -23,7 +23,7 @@ const CreateCard = ({ open, onClose, onSubmit }: CreateCardProps) => {
   const [description, setDescription] = useState<string>('');
 
   const isFormValid = Boolean(title.trim() && description.trim());
-  const isValidTitle = (value: string) => /^[a-zA-Z0-9]*$/.test(value);
+  const isValidTitle = (value: string) => /^[a-zA-Z0-9 ]*$/.test(value);
 
 
   const resetForm = () => {

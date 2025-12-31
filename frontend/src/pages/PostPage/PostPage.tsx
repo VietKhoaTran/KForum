@@ -29,6 +29,7 @@ import { useLocation } from 'react-router-dom';
 import useLikeComment from '../../hooks/comment/useLikeComment.tsx';
 import useReplyComment from '../../hooks/comment/useReplyComment.tsx';
 import { Comment } from '../../types/Comment.tsx';
+import { ReplyReturn } from '../../types/Comment.tsx';
 
 const PostPage = () => {
   const { post } = useParams<string>();
@@ -117,17 +118,17 @@ const PostPage = () => {
     if (localPost) {
       // console.log(commentText, localPost.ID)
       const data = await commentCreate(commentText, localPost.ID)
-      const newComment : Comment = {
-        ID: -1,
-        Comment: data,
-        CreatedBy: username,
-        NoLikes: 0,
-        CreatedAt: null,
-        Edited: false,
-        EditedAt: null,
-        ParentComment: null,
-      }
-      setLocalComments(prev => [...prev, newComment])
+      // const newComment : Comment = {
+      //   ID: -1,
+      //   Comment: data,
+      //   CreatedBy: username,
+      //   NoLikes: 0,
+      //   CreatedAt: null,
+      //   Edited: false,
+      //   EditedAt: null,
+      //   ParentComment: null,
+      // }
+      // setLocalComments(prev => [...prev, newComment])
 
       setLocalPost(prev =>
             prev
@@ -194,7 +195,8 @@ const PostPage = () => {
   };
 
   const handleReplyComment = async(commentID: number, reply: string) => {
-    await commentReply(reply, commentID, postID)
+    const  data :ReplyReturn = await commentReply(reply, commentID, postID)
+    return data
   }
 
   if (!localPost) return <Typography>Loading post...</Typography>;

@@ -3,11 +3,12 @@ package main
 import (
 	"backend/backend/internal/router"
 	"log"
+	"os"
 )
 
 func main() {
 
-	const PORT = ":5000"
+	PORT := os.Getenv("PORT")
 	r := router.Setup()
 
 	if err := r.Run(PORT); err != nil {

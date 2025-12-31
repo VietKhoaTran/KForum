@@ -194,7 +194,7 @@ func LikeComment(commentID int, username string) (int, error) {
 	return noComments, err
 }
 
-func ReplyComment(username string, commentID int, reply string, postID int) error {
+func ReplyComment(username string, commentID int, reply string, postID int) (int, error) {
 	db := database.Connect()
 	defer database.Close(db)
 
@@ -202,16 +202,22 @@ func ReplyComment(username string, commentID int, reply string, postID int) erro
 
 	userID, err := utils.GetUserID(ctx, db, username)
 	if err != nil {
-		return err
+		return -1, err
 	}
 
 	const query = `
 		INSERT INTO comments (post_id, comment, created_by, parent_comment)
-		VALUES ($1, $2, $3, $4);
+		VALUES ($1, $2, $3, $4)
+		RETURNING id;
 	`
 
-	_, err = db.ExecContext(ctx, query, postID, reply, userID, commentID)
-	return err
+	var newReply int
+	err = db.QueryRowContext(ctx, query, postID, reply, userID, commentID).Scan(&newReply)
+
+	if err != nil {
+		return -1, err
+	}
+	return newReply, err
 }
 
 func FetchReply(username string, commentID int) ([]models.CommentReturn, error) {

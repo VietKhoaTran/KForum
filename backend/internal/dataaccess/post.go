@@ -229,7 +229,7 @@ func LikePost(postTitle string, username string) (int, error) {
 
 	const queryUnlike = `
 		DELETE FROM post_likes 
-		WHERE user_id = $1 ANDc post_id = $2;
+		WHERE user_id = $1 AND post_id = $2;
 	`
 
 	const queryLike = `

@@ -12,3 +12,9 @@ export interface Comment {
   NoComments?: number;
   ParentComment: number | null;
 }
+
+export interface ReplyReturn {
+  id:number,
+  comment: string, 
+  created_by: string
+}

@@ -13,11 +13,12 @@ import { timeAgo } from '../../utils/TimeAgo.tsx';
 import useFetchReply from '../../hooks/comment/useFetchReply.tsx';
 import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
 import useLikeComment from '../../hooks/comment/useLikeComment.tsx';
+import { ReplyReturn } from '../../types/Comment.tsx';
 
 interface CommentCardProps {
   comment: Comment;
   onLike: (ID: number) => void;
-  onReply: (commentID: number, reply: string) => void;
+  onReply: (commentID: number, reply: string) => Promise<ReplyReturn>;
   onSave: (ID: number, newComment: string) => void;
   onDelete: (commentID: number) => void;
 }
@@ -70,12 +71,12 @@ const CommentCard = ({ comment, onLike, onReply, onSave, onDelete }: CommentCard
     setShowReplyInput(!showReplyInput);
   };
 
-  const handleReply = (reply: string) => {
-    onReply(comment.ID, reply);
+  const handleReply = async (reply: string) => {
+    const data = await onReply(comment.ID, reply);
     const newReply: Comment = {
-      ID: -1,
-      Comment: reply,
-      CreatedBy: username,
+      ID: data.id,
+      Comment: data.comment,
+      CreatedBy: data.created_by,
       NoLikes: 0,
       CreatedAt: null,
       Edited: false,
@@ -83,6 +84,7 @@ const CommentCard = ({ comment, onLike, onReply, onSave, onDelete }: CommentCard
       ParentComment: comment.ID,
     }
     setLocalReplies(prev => [...prev, newReply])
+    // setLocalReplies(prev => [...prev, data])
     setShowReplies(true);
     setShowReplyInput(false);
   };

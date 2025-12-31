@@ -28,6 +28,12 @@ type CommentReturn struct {
 	ParentComment *int       `json:"ParentComment`
 }
 
+type ReplyReturn struct {
+	ID        int    `json: ID`
+	Comment   string `json:Comment`
+	CreatedBy string `json:CreatedBy`
+}
+
 type CommentUpdate struct {
 	Comment string `json:"comment" binding:"required"`
 }

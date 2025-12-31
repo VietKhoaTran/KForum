@@ -143,13 +143,20 @@ func (c *Controller) Reply(ctx *gin.Context) {
 		return
 	}
 
-	err := dataComment.ReplyComment(username, req.CommentID, req.Reply, req.PostID)
+	replyID, err := dataComment.ReplyComment(username, req.CommentID, req.Reply, req.PostID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"reply": []string{req.Reply}})
+	ctx.JSON(http.StatusOK, gin.H{
+		"reply": gin.H{
+			"id":         replyID,
+			"comment":    req.Reply,
+			"created_by": username,
+		},
+	})
+
 }
 
 func (c *Controller) ReplyFetch(ctx *gin.Context) {
