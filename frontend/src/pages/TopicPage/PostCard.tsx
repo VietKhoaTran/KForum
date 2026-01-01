@@ -2,7 +2,7 @@ import { Card, CardContent, Typography, Box, IconButton } from '@mui/material';
 
 import { Post } from '../../types/Post';
 import Action from '../PostPage/Action.tsx';
-import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from '../forum.constants.ts';
 // import { Edit } from 'lucide-react';
 
 import { useNavigate } from 'react-router-dom';

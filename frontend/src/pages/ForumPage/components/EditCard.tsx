@@ -15,11 +15,11 @@ import {
   BRAND_PRIMARY,
   TEXT_FIELD_STYLES,
   PRIMARY_BUTTON_STYLES,
-} from './forum.constants.ts';
+} from '../../forum.constants.ts';
 
-import useUpdateTopic from '../../hooks/topic/useUpdateTopic.tsx';
-import useDeleteTopic from '../../hooks/topic/useDeleteTopic.tsx';
-import { Topic } from '../../types/Forum.tsx';
+import useUpdateTopic from '../../../hooks/topic/useUpdateTopic.tsx';
+import useDeleteTopic from '../../../hooks/topic/useDeleteTopic.tsx';
+import { Topic } from '../../../types/Forum.tsx';
 
 interface EditCardProps {
   open: boolean;

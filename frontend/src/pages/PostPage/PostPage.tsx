@@ -15,7 +15,7 @@ import Header from '../Header.tsx';
 import CommentCard from './CommentCard.tsx';
 import Action from './Action.tsx';
 import { Post } from '../../types/Post.tsx';
-import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER } from '../forum.constants.ts';
 
 import useFetch1Post from '../../hooks/post/useFetch1Post.tsx';
 import useLikePost from '../../hooks/post/useLikePost.tsx';
@@ -284,9 +284,9 @@ const PostPage = () => {
 
         <Box>
           {/* Only show the comments, not replies */}
-          {localComments.filter(comment => comment.ParentComment == null).map((comment, index) => (
+          {localComments.filter(comment => comment.ParentComment == null).map((comment) => (
             <CommentCard 
-              key={index} 
+              key={comment.ID} 
               comment={comment} 
               onSave={handleUpdateComment} 
               onDelete={handleDeleteComment} 

@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { 
+    useState,
+    useCallback 
+} from "react";
 import api from "../../api/api.tsx";
 import axios from "axios";
 import {Topic} from "../../types/Forum.tsx"
@@ -8,7 +11,8 @@ const useFetchTopic = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchTopics = async() => {
+    // prevent duplicate fetch
+    const fetchTopics = useCallback(async() => {
         setLoading(true);
         setError(null);
 
@@ -25,7 +29,7 @@ const useFetchTopic = () => {
         } finally {
             setLoading(false)
         }
-    }
+    }, []);
 
     return {topics, fetchTopics, loading, error}
 }

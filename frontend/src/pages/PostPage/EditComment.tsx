@@ -11,7 +11,7 @@ import {
   Box 
 } from '@mui/material';
 
-import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER, TEXT_FIELD_STYLES } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER, TEXT_FIELD_STYLES } from '../forum.constants.ts';
 import {Comment} from '../../types/Comment.tsx'
 import useUpdateCommment from '../../hooks/comment/useUpdateComment.tsx';
 import useDeleteComment from '../../hooks/comment/useDeleteComment.tsx';

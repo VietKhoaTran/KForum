@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { Search } from 'lucide-react';
 
-import { BRAND_PRIMARY } from './ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY } from './forum.constants.ts';
 import logo from '../image/logo.png';
 
 interface HeaderProps {

@@ -11,7 +11,7 @@ import EditComment from './EditComment.tsx';
 import ReplyInputCard from './ReplyInputCard.tsx';
 import { timeAgo } from '../../utils/TimeAgo.tsx';
 import useFetchReply from '../../hooks/comment/useFetchReply.tsx';
-import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY } from '../forum.constants.ts';
 import useLikeComment from '../../hooks/comment/useLikeComment.tsx';
 import { ReplyReturn } from '../../types/Comment.tsx';
 
@@ -35,7 +35,7 @@ const CommentCard = ({ comment, onLike, onReply, onSave, onDelete }: CommentCard
 
   useEffect(() => {
     fetchReplies(comment.ID);
-  }, [comment]);
+  }, [comment.ID]);
 
   useEffect(() => {
     if (replies) {

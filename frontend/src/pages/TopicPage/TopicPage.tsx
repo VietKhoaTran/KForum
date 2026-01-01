@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from 'react-router-dom';
 import Header from '../Header.tsx';
 import PostList from './PostList.tsx';
 import { Post } from '../../types/Post.tsx';
-import { BRAND_PRIMARY, PRIMARY_BUTTON_STYLES } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY, PRIMARY_BUTTON_STYLES } from '../forum.constants.ts';
 import '../Page.css';
 import CreateCard from './CreateCard.tsx';
 import useCreatePost from '../../hooks/post/useCreatePost.tsx';

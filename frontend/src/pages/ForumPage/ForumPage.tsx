@@ -1,119 +1,36 @@
-import { 
-  useState, 
-  useMemo, 
-  useEffect, 
-  useCallback } from 'react';
 import {
-  Box,
-  Container,
-  Typography,
-  Button,
+    Box,
+    Container,
+    Typography,
+    Button
 } from '@mui/material';
+
 import { useOutletContext } from 'react-router-dom';
 
-import TopicList from './TopicList.tsx';
-import CreateCard from './CreateCard.tsx';
+import TopicList from './components/TopicList.tsx';
+// import TopicCard from '../TopicCard.tsx';
+import Header from '../Header.tsx';
+import CreateCard from './components/CreateCard.tsx';
 
-import useFetchTopic from '../../hooks/topic/useFetchTopic.tsx';
-import useCreateTopic from '../../hooks/topic/useCreateTopic.tsx';
-import usePinTopic from '../../hooks/topic/usePinTopic.tsx';
-import Header from '../Header.tsx'
+import { useForumManager } from './useForumManager.ts';
 
-import { Topic } from '../../types/Forum.tsx';
-import {
-  BRAND_PRIMARY,
-  PRIMARY_BUTTON_STYLES,
-} from './forum.constants.ts';
-
-// import '../Page.css';
-
+import { BRAND_PRIMARY, PRIMARY_BUTTON_STYLES } from '../forum.constants.ts';
 
 const ForumPage = () => {
   const { username } = useOutletContext<{ username: string }>();
 
-  const { topics, fetchTopics } = useFetchTopic();
-  const { topicCreate } = useCreateTopic();
-  const { topicPin } = usePinTopic();
-
-  const [localTopics, setLocalTopics] = useState<Topic[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    fetchTopics();
-  }, []);
-
-  useEffect(() => {
-    if (topics) setLocalTopics(topics);
-  }, [topics]);
-
-  const matchesSearch = useCallback(
-    (topic: Topic) => {
-      const term = searchTerm.toLowerCase();
-      return (
-        topic.Title.toLowerCase().includes(term) ||
-        topic.Description.toLowerCase().includes(term)
-      );
-    },
-    [searchTerm]
-  );
-
-  const pinnedTopics = useMemo(
-    () => localTopics.filter(t => t.Pinned && matchesSearch(t)),
-    [localTopics, matchesSearch]
-  );
-
-  const otherTopics = useMemo(
-    () => localTopics.filter(t => !t.Pinned && matchesSearch(t)),
-    [localTopics, matchesSearch]
-  );
-
-  const handleCreateTopic = async (title: string, description: string) => {
-    await topicCreate(title, description);
-
-    const newTopic: Topic = {
-      ID: -1,
-      Title: title,
-      Description: description,
-      Pinned: false,
-      Created: true,
-    };
-
-    //push topic to the top
-    setLocalTopics(prev => [newTopic,...prev]);
-    setCreateDialogOpen(false);
-  };
-
-  const handlePinTopic = async (id: number) => {
-    const topic = localTopics.find(t => t.ID === id);
-    if (!topic) return;
-
-    await topicPin(topic.Title);
-
-    setLocalTopics(prev =>
-      prev.map(t =>
-        t.ID === id ? { ...t, Pinned: !t.Pinned } : t
-      )
-    );
-  };
-
-  const handleUpdateTopic = (
-    id: number,
-    newTitle: string,
-    newDescription: string
-  ) => {
-    setLocalTopics(prev =>
-      prev.map(t =>
-        t.ID === id
-          ? { ...t, Title: newTitle, Description: newDescription }
-          : t
-      )
-    );
-  };
-
-  const handleDeleteTopic = (id: number) => {
-    setLocalTopics(prev => prev.filter(t => t.ID !== id));
-  };
+  const {
+    searchTerm,
+    setSearchTerm,
+    pinnedTopics,
+    otherTopics,
+    createDialogOpen,
+    setCreateDialogOpen,
+    handleCreate,
+    handleUpdate,
+    handleDelete,
+    handlePin,
+  } = useForumManager();
 
   const pinnedEmptyMessage = searchTerm
     ? `No pinned topics found matching "${searchTerm}"`
@@ -126,14 +43,14 @@ const ForumPage = () => {
   return (
     <Box sx={{ minHeight: '100vh' }} className="forum">
       {/* Header */}
-      <Header 
+      <Header
         username={username}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        pageType='topic'
+        pageType="topic"
       />
 
-      {/* Content */}
+        {/* Content */}
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box
           sx={{
@@ -155,8 +72,8 @@ const ForumPage = () => {
             variant="contained"
             onClick={() => setCreateDialogOpen(true)}
             sx={{
-              ...PRIMARY_BUTTON_STYLES,
-              borderRadius: '15px',
+                ...PRIMARY_BUTTON_STYLES,
+                borderRadius: '15px',
             }}
           >
             Create a Topic
@@ -166,9 +83,9 @@ const ForumPage = () => {
         <TopicList
           topics={pinnedTopics}
           emptyMessage={pinnedEmptyMessage}
-          onPin={handlePinTopic}
-          onUpdate={handleUpdateTopic}
-          onDelete={handleDeleteTopic}
+          onPin={handlePin}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
         />
 
         <Typography
@@ -180,25 +97,25 @@ const ForumPage = () => {
             mb: 3,
           }}
         >
-          All Topics
+            All Topics
         </Typography>
 
         <TopicList
           topics={otherTopics}
           emptyMessage={otherEmptyMessage}
-          onPin={handlePinTopic}
-          onUpdate={handleUpdateTopic}
-          onDelete={handleDeleteTopic}
+          onPin={handlePin}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
         />
       </Container>
 
       <CreateCard
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
-        onSubmit={handleCreateTopic}
+        onSubmit={handleCreate}
       />
     </Box>
   );
-};
+}
 
-export default ForumPage;
+export default ForumPage

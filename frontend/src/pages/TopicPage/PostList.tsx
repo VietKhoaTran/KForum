@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import {Post} from '../../types/Post.tsx'
 import PostCard from './PostCard.tsx';
-import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY } from '../forum.constants.ts';
 
 interface Props {
     posts: Post[]

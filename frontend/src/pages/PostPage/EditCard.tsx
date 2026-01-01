@@ -11,7 +11,7 @@ import {
   Typography, 
   Box 
 } from '@mui/material';
-import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER, TEXT_FIELD_STYLES } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY, BRAND_PRIMARY_HOVER, TEXT_FIELD_STYLES } from '../forum.constants.ts';
 import { Post } from '../../types/Post';
 import useUpdatePost from '../../hooks/post/useUpdatePost.tsx';
 import useDeletePost from '../../hooks/post/useDeletePost.tsx';

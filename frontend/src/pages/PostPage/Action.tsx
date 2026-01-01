@@ -2,7 +2,7 @@ import { Box, Typography, IconButton } from '@mui/material';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { BRAND_PRIMARY } from '../ForumPage/forum.constants.ts';
+import { BRAND_PRIMARY } from '../forum.constants.ts';
 
 interface ActionsProps {
   liked: boolean;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import api from "../../api/api.tsx";
 import axios from "axios";
 import {Comment} from "../../types/Comment.tsx"
@@ -8,7 +8,7 @@ const useFetchReply = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchReplies = async(commentID: number) => {
+    const fetchReplies = useCallback(async(commentID: number) => {
         setLoading(true);
         setError(null);
 
@@ -24,7 +24,7 @@ const useFetchReply = () => {
         } finally {
             setLoading(false)
         }
-    }
+    }, []);
 
     return {replies, fetchReplies, loading, error}
 }

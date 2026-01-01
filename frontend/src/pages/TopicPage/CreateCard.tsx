@@ -9,7 +9,7 @@ import {
 import {
   BRAND_PRIMARY,
   BRAND_PRIMARY_HOVER,
-} from '../ForumPage/forum.constants.ts';
+} from '../forum.constants.ts';
 
 interface CreateCardProps {
   open: boolean;

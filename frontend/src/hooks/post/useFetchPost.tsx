@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import api from "../../api/api.tsx";
 import axios from "axios";
 import {Post} from "../../types/Post.tsx"
@@ -8,7 +8,7 @@ const useFetchPost = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchPosts = async(topicTitle: string) => {
+    const fetchPosts = useCallback(async(topicTitle: string) => {
         setLoading(true);
         setError(null);
 
@@ -24,7 +24,7 @@ const useFetchPost = () => {
         } finally {
             setLoading(false)
         }
-    }
+    }, []);
 
     return {posts, fetchPosts, loading, error}
 }
