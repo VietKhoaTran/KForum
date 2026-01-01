@@ -1,4 +1,8 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { 
+  useState, 
+  useMemo, 
+  useEffect, 
+  useCallback } from 'react';
 import {
   Box,
   Container,
@@ -33,7 +37,7 @@ const ForumPage = () => {
 
   const [localTopics, setLocalTopics] = useState<Topic[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     fetchTopics();
@@ -64,23 +68,19 @@ const ForumPage = () => {
     [localTopics, matchesSearch]
   );
 
-  const handleCreateSubmit = async (title: string, description: string) => {
-    const topic = await topicCreate(
-      title,
-      description
-    );
+  const handleCreateTopic = async (title: string, description: string) => {
+    await topicCreate(title, description);
 
     const newTopic: Topic = {
       ID: -1,
-      Title: topic.Title,
-      Description: topic.Description,
+      Title: title,
+      Description: description,
       Pinned: false,
       Created: true,
     };
 
-    console.log(newTopic)
-
-    setLocalTopics(prev => [...prev, newTopic]);
+    //push topic to the top
+    setLocalTopics(prev => [newTopic,...prev]);
     setCreateDialogOpen(false);
   };
 
@@ -195,7 +195,7 @@ const ForumPage = () => {
       <CreateCard
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
-        onSubmit={handleCreateSubmit}
+        onSubmit={handleCreateTopic}
       />
     </Box>
   );
