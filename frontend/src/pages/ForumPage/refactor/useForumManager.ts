@@ -43,6 +43,6 @@ export const useForumManager = () => {
 
     // -----CRUD Action-----
     const handleCreate = async(title: string, description: string) => {
-        
+        await topicCreate(title, description);
     }
 }
