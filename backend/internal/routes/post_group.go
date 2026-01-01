@@ -9,10 +9,14 @@ import (
 
 func postGroup(r *gin.RouterGroup) {
 	ctrl := PostCtrl.NewController()
-	r.POST("/create", middleware.AuthMiddleWare(), ctrl.Create)
-	r.GET("/fetch/:topicTitle", middleware.AuthMiddleWare(), ctrl.Fetch)
-	r.GET("/fetch1/:postID", middleware.AuthMiddleWare(), ctrl.Fetch1)
-	r.POST("/like", middleware.AuthMiddleWare(), ctrl.Like)
-	r.PUT("/update/:id", middleware.AuthMiddleWare(), ctrl.Update)
-	r.DELETE("/delete/:id", middleware.AuthMiddleWare(), ctrl.Delete)
+
+	r.Use(middleware.AuthMiddleWare())
+	{
+		r.POST("/create", ctrl.Create)
+		r.GET("/fetch/:topicTitle", ctrl.Fetch)
+		r.GET("/fetch1/:postID", ctrl.Fetch1)
+		r.POST("/like", ctrl.Like)
+		r.PUT("/update/:id", ctrl.Update)
+		r.DELETE("/delete/:id", ctrl.Delete)
+	}
 }

@@ -3,6 +3,7 @@ package post
 import (
 	dataaccess "backend/backend/internal/dataaccess"
 	"backend/backend/internal/models"
+	"backend/backend/internal/utils"
 	"net/http"
 	"strconv"
 
@@ -11,35 +12,27 @@ import (
 
 func (c *Controller) Create(ctx *gin.Context) {
 	var req models.PostCreate
-
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
-	err := dataaccess.CreatePost(req.Title, req.Details, req.Topic, username)
-	if err != nil {
+	if err := dataaccess.CreatePost(req.Title, req.Details, req.Topic, username); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"post": []string{req.Title, req.Details}})
+	ctx.JSON(http.StatusCreated, gin.H{"post": req})
 }
 
 func (c *Controller) Fetch(ctx *gin.Context) {
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
@@ -55,11 +48,8 @@ func (c *Controller) Fetch(ctx *gin.Context) {
 }
 
 func (c *Controller) Fetch1(ctx *gin.Context) {
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
@@ -87,13 +77,8 @@ func (c *Controller) Like(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
-	// fmt.Print("still running")
-	// fmt.Print(req.Title)
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 	number, err := dataaccess.LikePost(req.Title, username)
@@ -107,12 +92,11 @@ func (c *Controller) Like(ctx *gin.Context) {
 }
 
 func (c *Controller) Update(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+	id, ok := utils.GetIDParam(ctx)
+	if !ok {
 		return
 	}
+
 	var req models.PostUpdate
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -120,7 +104,7 @@ func (c *Controller) Update(ctx *gin.Context) {
 		return
 	}
 
-	err = dataaccess.UpdatePost(id, req.Title, req.Details)
+	err := dataaccess.UpdatePost(id, req.Title, req.Details)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -129,14 +113,12 @@ func (c *Controller) Update(ctx *gin.Context) {
 }
 
 func (c *Controller) Delete(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+	id, ok := utils.GetIDParam(ctx)
+	if !ok {
 		return
 	}
 
-	err = dataaccess.DeletePost(id)
+	err := dataaccess.DeletePost(id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

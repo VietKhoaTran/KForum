@@ -32,9 +32,9 @@ import { Comment } from '../../types/Comment.tsx';
 import { ReplyReturn } from '../../types/Comment.tsx';
 
 const PostPage = () => {
-  const { post } = useParams<string>();
+  // const { post } = useParams<string>();
   // const title = post ? decodeURIComponent(post).replaceAll('_', ' ') : '';
-  const title = post?.replaceAll('_', ' ');
+  // const title = post?.replaceAll('_', ' ');
   // console.log(title)
   const { username } = useOutletContext<{ username: string }>();
   const [localPost, setLocalPost] = useState<Post | null>(null);
@@ -49,6 +49,7 @@ const PostPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const {postID} = location.state || {};
+  console.log(postID)
 
   const { postFetch, fetch1Post } = useFetch1Post();
   const {commentReply} = useReplyComment();

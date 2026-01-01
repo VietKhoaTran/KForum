@@ -11,7 +11,7 @@ const useReplyComment = () => {
         setError(null);
 
         try {
-            const res = await api.post('/comment/reply/', {
+            const res = await api.post('/comment/reply', {
                 reply: reply,
                 commentID: commentID,
                 postID: postID

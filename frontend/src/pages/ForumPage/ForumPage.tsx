@@ -65,18 +65,20 @@ const ForumPage = () => {
   );
 
   const handleCreateSubmit = async (title: string, description: string) => {
-    const [createdTitle, createdDescription] = await topicCreate(
+    const topic = await topicCreate(
       title,
       description
     );
 
     const newTopic: Topic = {
       ID: -1,
-      Title: createdTitle,
-      Description: createdDescription,
+      Title: topic.Title,
+      Description: topic.Description,
       Pinned: false,
       Created: true,
     };
+
+    console.log(newTopic)
 
     setLocalTopics(prev => [...prev, newTopic]);
     setCreateDialogOpen(false);

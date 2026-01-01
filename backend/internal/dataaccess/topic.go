@@ -4,16 +4,39 @@ import (
 	"backend/backend/internal/database"
 	"backend/backend/internal/models"
 	utils "backend/backend/internal/utils"
-	"database/sql"
-
 	"context"
+	"database/sql"
+	"fmt"
 )
+
+func CheckTopicExisting(title string) (bool, error) {
+	db := database.Connect()
+	defer database.Close(db)
+
+	var exists bool
+	query := `
+		SELECT EXISTS(
+			SELECT 1
+			FROM topics
+			WHERE title = $1
+		)
+	`
+
+	err := db.QueryRow(query, title).Scan(&exists)
+	return exists, err
+}
 
 func CreateTopic(title, description, username string) error {
 	db := database.Connect()
 	defer database.Close(db)
 
 	ctx := context.Background()
+
+	exists, err := CheckTopicExisting(title)
+	if exists {
+		fmt.Print("existing")
+		return err
+	}
 
 	userID, err := utils.GetUserID(ctx, db, username)
 	if err != nil {

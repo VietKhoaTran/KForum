@@ -3,47 +3,39 @@ package topic
 import (
 	dataTopic "backend/backend/internal/dataaccess"
 	models "backend/backend/internal/models"
+	"backend/backend/internal/utils"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (c *Controller) Create(ctx *gin.Context) {
 	var req models.CreateRequest
-
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	usernameIface, _ := ctx.Get("username")
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
-	err := dataTopic.CreateTopic(req.Title, req.Description, username)
-	if err != nil {
+	if err := dataTopic.CreateTopic(req.Title, req.Description, username); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"topic": []string{req.Title, req.Description}})
+	ctx.JSON(http.StatusCreated, gin.H{"topic": req})
 }
 
 func (c *Controller) Fetch(ctx *gin.Context) {
-	usernameIface, _ := ctx.Get("username")
-	username, ok := usernameIface.(string)
-
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
 	topics, err := dataTopic.FetchTopic(username)
-
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch topics"})
 		return
@@ -53,11 +45,8 @@ func (c *Controller) Fetch(ctx *gin.Context) {
 }
 
 func (c *Controller) Pin(ctx *gin.Context) {
-	usernameIface, _ := ctx.Get("username")
-	username, ok := usernameIface.(string)
-
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
@@ -67,49 +56,44 @@ func (c *Controller) Pin(ctx *gin.Context) {
 		return
 	}
 
-	err := dataTopic.PinToggleTopic(req.Title, username)
-
-	if err != nil {
+	if err := dataTopic.PinToggleTopic(req.Title, username); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"topic": []string{req.Title, username}})
+	ctx.JSON(http.StatusOK, gin.H{"status": "success", "title": req.Title})
 }
 
 func (c *Controller) Update(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+	id, ok := utils.GetIDParam(ctx)
+	if !ok {
 		return
 	}
+
 	var req models.CreateRequest
-
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid reqeuest"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	err = dataTopic.UpdateTopic(id, req.Title, req.Description)
-	if err != nil {
+	if err := dataTopic.UpdateTopic(id, req.Title, req.Description); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"updated topic": []string{req.Title, req.Description}})
+
+	ctx.JSON(http.StatusOK, gin.H{"updated_topic": req})
 }
 
 func (c *Controller) Delete(ctx *gin.Context) {
-	idStr := ctx.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+	id, ok := utils.GetIDParam(ctx)
+	if !ok {
 		return
 	}
 
-	err = dataTopic.DeleteTopic(id)
-	if err != nil {
+	if err := dataTopic.DeleteTopic(id); err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	ctx.Status(http.StatusNoContent)
 }

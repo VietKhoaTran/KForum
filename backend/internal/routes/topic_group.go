@@ -10,9 +10,12 @@ import (
 func topicGroup(r *gin.RouterGroup) {
 	ctrl := topic.NewController()
 
-	r.POST("/create", middleware.AuthMiddleWare(), ctrl.Create)
-	r.GET("/fetch", middleware.AuthMiddleWare(), ctrl.Fetch)
-	r.POST("/pin", middleware.AuthMiddleWare(), ctrl.Pin)
-	r.PUT("/update/:id", ctrl.Update)
-	r.DELETE("/delete/:id", ctrl.Delete)
+	r.Use(middleware.AuthMiddleWare())
+	{
+		r.POST("/create", ctrl.Create)
+		r.GET("/fetch", ctrl.Fetch)
+		r.PUT("/update/:id", ctrl.Update)
+		r.DELETE("/delete/:id", ctrl.Delete)
+	}
+	r.POST("/pin", ctrl.Pin)
 }

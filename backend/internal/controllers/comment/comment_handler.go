@@ -3,6 +3,7 @@ package comment
 import (
 	dataComment "backend/backend/internal/dataaccess"
 	"backend/backend/internal/models"
+	"backend/backend/internal/utils"
 	"net/http"
 	"strconv"
 
@@ -17,11 +18,8 @@ func (c *Controller) Create(ctx *gin.Context) {
 		return
 	}
 
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
@@ -35,11 +33,8 @@ func (c *Controller) Create(ctx *gin.Context) {
 }
 
 func (c *Controller) Fetch(ctx *gin.Context) {
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
@@ -109,11 +104,8 @@ func (c *Controller) Like(ctx *gin.Context) {
 		return
 	}
 
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
@@ -135,11 +127,8 @@ func (c *Controller) Reply(ctx *gin.Context) {
 		return
 	}
 
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
@@ -160,11 +149,8 @@ func (c *Controller) Reply(ctx *gin.Context) {
 }
 
 func (c *Controller) ReplyFetch(ctx *gin.Context) {
-	usernameIface, _ := ctx.Get("username")
-
-	username, ok := usernameIface.(string)
+	username, ok := utils.GetUsername(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid username after decoding JWT"})
 		return
 	}
 
