@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"log"
 	"os"
-	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -18,19 +17,12 @@ func Connect() *sql.DB {
 		log.Fatal(err)
 	}
 
-	for i := 1; i <= 10; i++ {
-		err = db.Ping()
-		if err == nil {
-			log.Println("Connected to database!")
-			return db
-		}
-
-		log.Printf("Waiting for database... (%d/10)", i)
-		time.Sleep(2 * time.Second)
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
 	}
 
-	log.Fatal("Could not connect to database:", err)
-	return nil
+	log.Println("Connected to database!")
+	return db
 }
 
 func Close(db *sql.DB) {
