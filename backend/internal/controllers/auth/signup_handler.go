@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"backend/backend/internal/config"
-	dataAuth "backend/backend/internal/dataaccess"
-	models "backend/backend/internal/models"
-	utilsAuth "backend/backend/internal/utils/auth"
+	"backend/internal/config"
+	dataAuth "backend/internal/dataaccess"
+	models "backend/internal/models"
+	utilsAuth "backend/internal/utils/auth"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

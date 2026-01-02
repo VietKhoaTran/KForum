@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"backend/backend/internal/config"
+	"backend/internal/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

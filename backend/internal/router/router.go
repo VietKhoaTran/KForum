@@ -1,7 +1,7 @@
 package router
 
 import (
-	"backend/backend/internal/routes"
+	"backend/internal/routes"
 
 	"os"
 

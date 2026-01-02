@@ -1,12 +1,12 @@
 -- USERS TABLE
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL,
     hash_password VARCHAR(255) NOT NULL
 );
 
 -- TOPICS TABLE
-CREATE TABLE topics (
+CREATE TABLE IF NOT EXISTS topics (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255),
     description TEXT,
@@ -20,7 +20,7 @@ CREATE TABLE topics (
 );
 
 -- TOPIC_PINS TABLE
-CREATE TABLE topic_pins (
+CREATE TABLE IF NOT EXISTS topic_pins (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     topic_id INTEGER NOT NULL,

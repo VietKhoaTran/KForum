@@ -1,4 +1,4 @@
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     id SERIAL PRIMARY KEY,
     post_id INTEGER NOT NULL,
 
@@ -27,7 +27,7 @@ CREATE TABLE comments (
         ON DELETE SET NULL
 );
 
-CREATE TABLE comment_likes (
+CREATE TABLE IF NOT EXISTS comment_likes (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     comment_id INTEGER NOT NULL,

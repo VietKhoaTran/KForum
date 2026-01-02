@@ -1,9 +1,9 @@
 package comment
 
 import (
-	dataComment "backend/backend/internal/dataaccess"
-	"backend/backend/internal/models"
-	"backend/backend/internal/utils"
+	dataComment "backend/internal/dataaccess"
+	"backend/internal/models"
+	"backend/internal/utils"
 	"net/http"
 	"strconv"
 

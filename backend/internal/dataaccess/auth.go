@@ -1,8 +1,8 @@
 package dataaccess
 
 import (
-	"backend/backend/internal/database"
-	utilsAuth "backend/backend/internal/utils/auth"
+	"backend/internal/database"
+	utilsAuth "backend/internal/utils/auth"
 	"context"
 	"errors"
 )

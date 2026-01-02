@@ -1,9 +1,9 @@
 package post
 
 import (
-	dataaccess "backend/backend/internal/dataaccess"
-	"backend/backend/internal/models"
-	"backend/backend/internal/utils"
+	dataaccess "backend/internal/dataaccess"
+	"backend/internal/models"
+	"backend/internal/utils"
 	"net/http"
 	"strconv"
 

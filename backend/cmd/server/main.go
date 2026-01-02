@@ -1,12 +1,15 @@
 package main
 
 import (
-	"backend/backend/internal/router"
+	"backend/internal/router"
 	"log"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	_ = godotenv.Load()
 
 	PORT := os.Getenv("PORT")
 	r := router.Setup()

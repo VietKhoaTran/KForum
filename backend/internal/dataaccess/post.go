@@ -1,9 +1,9 @@
 package dataaccess
 
 import (
-	"backend/backend/internal/database"
-	"backend/backend/internal/models"
-	utils "backend/backend/internal/utils"
+	"backend/internal/database"
+	"backend/internal/models"
+	utils "backend/internal/utils"
 	"context"
 	"fmt"
 )

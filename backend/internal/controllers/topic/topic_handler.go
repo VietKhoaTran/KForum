@@ -1,9 +1,9 @@
 package topic
 
 import (
-	dataTopic "backend/backend/internal/dataaccess"
-	models "backend/backend/internal/models"
-	"backend/backend/internal/utils"
+	dataTopic "backend/internal/dataaccess"
+	models "backend/internal/models"
+	"backend/internal/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

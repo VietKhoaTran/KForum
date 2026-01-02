@@ -1,7 +1,7 @@
 package models
 
 import (
-	"backend/backend/internal/config"
+	"backend/internal/config"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"

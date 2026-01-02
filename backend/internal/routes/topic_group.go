@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"backend/backend/internal/controllers/topic"
-	"backend/backend/internal/middleware"
+	"backend/internal/controllers/topic"
+	"backend/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
