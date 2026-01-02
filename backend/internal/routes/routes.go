@@ -15,5 +15,6 @@ func GetRoutes() func(r *gin.Engine) {
 
 		comment := r.Group("/comment")
 		commentGroup(comment)
+
 	}
 }
