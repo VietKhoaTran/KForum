@@ -11,15 +11,14 @@ const useSignUp = () => {
     const [error, setError] = useState<string | null>(null); 
 
     const signup = async (username: string, password: string) => {
+        console.log("this is the api: ", api.defaults.baseURL)
         setLoading(true);
         setError(null);
-
         try {
             const res = await api.post<AuthResponse>("/auth/signup", {
                 name: username,
                 password: password,
             });
-
             console.log(res.data.message);
             navigate("/", {replace: true})
             

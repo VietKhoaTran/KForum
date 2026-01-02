@@ -41,6 +41,7 @@ const AuthPage = () => {
     !name.trim() || !password.trim();
 
   const handleSubmitSignUp = async (event: FormEvent<HTMLFormElement>) => {
+    console.log("HandleSubmit is called")
     event.preventDefault();
     if(isSignUp && password !== confirmPassword) {
       alert("Passwords do not match");
@@ -127,6 +128,7 @@ const AuthPage = () => {
               variant="contained"
               className="submit-button"
               disabled={isSubmitDisabled}
+              onClick={() => console.log("button still running/ is clicked")}
             >
               {isSignUp ? "Sign Up" : "Log In"}
             </Button>
