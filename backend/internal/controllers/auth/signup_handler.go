@@ -45,8 +45,8 @@ func (c *Controller) SignUp(ctx *gin.Context) {
 		issuedJWT,
 		10*24*60*60,
 		"/",
-		"3.27.131.69", // or ""
-		false,         // Secure MUST be false on HTTP
+		"",
+		false,
 		true,
 	)
 

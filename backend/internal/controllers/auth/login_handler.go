@@ -28,7 +28,7 @@ func (c *Controller) LogIn(ctx *gin.Context) {
 		issuedJWT,
 		10*24*60*60, //10 days
 		"/",
-		"3.27.131.69",
+		"",
 		false,
 		true, //HttpOnly
 	)
